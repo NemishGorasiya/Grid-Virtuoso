@@ -48,7 +48,6 @@ const ProductsGrid = () => {
     category,
     abortController,
     queryParams,
-    isAppending = false,
   } = {}) => {
     try {
       const url =
@@ -66,7 +65,7 @@ const ProductsGrid = () => {
       if (res) {
         const { products, total } = res;
         setProducts((prevProducts) => {
-          const newList = isAppending
+          const newList = list.length
             ? [...prevProducts.list, ...products]
             : [...products];
           const hasMore = newList.length < total;
@@ -97,7 +96,6 @@ const ProductsGrid = () => {
         category,
         queryParams: { skip: list.length },
         abortController: currentAbortController.current,
-        isAppending: true,
       });
     }
   }, [category, hasMore, isLoading, list.length]);
@@ -119,12 +117,6 @@ const ProductsGrid = () => {
 
   // initial request
   useEffect(() => {
-    setCategory("all");
-    setProducts({
-      list: [],
-      isLoading: true,
-      hasMore: false,
-    });
     currentAbortController.current = new AbortController();
     getProducts({
       category: "all",
